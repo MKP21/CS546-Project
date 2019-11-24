@@ -1,0 +1,6 @@
+Commit 1
+ - Database and all its functions
+ - @Meet will improve the performance of the functions in the future
+ - Base is ready
+ - test.js is a "seed" file for the database. (its only half complete)
+ - look at the code and proceed with chat and authentication
