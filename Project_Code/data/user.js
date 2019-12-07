@@ -1,9 +1,8 @@
 // All the functions that are related to users
-
 const mongo = require('mongodb');
 const mongoCollections = require('../config/mongoCollections');
 const passHashFn = require('password-hash');
-const roomfunctions = require('./room.js')
+const roomfunctions = require('./room.js');
 
 let userCollection = mongoCollections.users;
 let onlineCollection = mongoCollections.online;
@@ -21,7 +20,7 @@ async function createUser(firstName,lastName,email,password,type){
     
     // connecting to the user collection
     var userColl = await userCollection();
-    
+       
     // checking if user with a given email already exists
     email = email.toLowerCase();
     var emailExists = await userColl.find({email:email}).toArray();
@@ -30,7 +29,6 @@ async function createUser(firstName,lastName,email,password,type){
     }
 
     // Now that the user is a new user, we can proceed to adding them
-
     //  password is passed through a hashfunction
     var hashedPassword = passHashFn.generate(password);
 
@@ -44,6 +42,7 @@ async function createUser(firstName,lastName,email,password,type){
         "roomList": [] // initially, the user will not be a part of any room
     }
 
+    // insert user into the database
     var insertedInfo = await userColl.insertOne(newUser);
     if (insertedInfo.insertedCount === 0) throw 'Error: Adding user to userCollection failed!';
 
@@ -54,7 +53,6 @@ async function createUser(firstName,lastName,email,password,type){
 async function getUser(id){
     if(!id) throw "Error: The parameter for id does not exist!!";
     var i = await isObjId(id);
-
     var userColl = await userCollection();
 
     var userArray = await userColl.find({_id:i}).toArray();
@@ -66,7 +64,6 @@ async function getUser(id){
 // Get user by email
 async function getUserByEmail(email){
     if(!email || typeof(email) != 'string') throw "Error: The parameter for email does not exist!!";
-    
     var userColl = await userCollection();
 
     var userArray = await userColl.find({email:email}).toArray();
@@ -84,27 +81,35 @@ async function deleteUser(id){
     const userColl = await userCollection();
     const roomsColl = await roomsCollection();
 
+    //find the user to be deleted
     var tobedeleted = await userColl.find({_id:i}).toArray();
     if(tobedeleted.length == 0)throw "Error: the element to be deleted does not exist!";
 
-    //remove all the rooms which user created
+    //  delete all the rooms created by the user
     var createdArray = await roomsColl.find({creatorId:i}).toArray();
     for(var m=0;m<createdArray.length;m++){
         //delete rooms function of room.js
-        var deletedRoom = await roomfunctions.deleteRoom(createdArray[i]._id,i);
+        
+        var deletedRoom = await roomfunctions.deleteRoom(createdArray[m]._id,i);
     }
 
     //remove user from remaining rooms
-    tobedeleted = await userColl.find({_id:i}).toArray();       //refreshing user data, to find the updated roomList
-    if(tobedeleted.length == 0)throw "Error: the element to be deleted does not exist!";
+    //(refreshing user data, to find the updated roomList)
+    tobedeleted = await userColl.find({_id:i}).toArray();
+    // if(tobedeleted.length == 0)throw "Error: the element to be deleted does not exist!";
 
     for(var n=0;n<tobedeleted[0].roomList.length;n++){
         // remove user function of room.js
+        console.log(tobedeleted[0]);
+        const removed = await roomfunctions.removeUser(tobedeleted[0]._id,tobedeleted[0].roomList[n].roomId);
+        //if(roomupdated.matchedCount === 0) throw "Error: the room's memberlist cannot be updated!!";
+    
     }
 
     // deleting user from user collection
-    userColl.deleteOne({_id:i});
-
+    const deleted = await userColl.deleteOne({_id:i});
+    if(deleted.deletedCount == 0) throw "Error: could not delete user from collection"
+    
     return tobedeleted[0];
 }
 
@@ -183,8 +188,20 @@ async function userLogout(userEmail){
 }
 
 // list of online users
+async function roomList(userEmail){
+    if(!userEmail || typeof(userEmail) != 'string') throw "Error: the userEmail param does not exist";
+    userEmail = userEmail.toLowerCase();
 
-module.exports={createUser,getUser,deleteUser,changepassword,userLogin,userLogout,getUserByEmail}
+    var userColl = await userCollection();
+    
+    //  check if user with given email exists
+    var userArray = await userColl.find({email:userEmail}).toArray();
+    if(userArray.length === 0) throw "Error: a user with the given id does not exist!";
+
+    // returns the list of rooms that user is a part of
+    return userArray[0].roomList;
+}
+module.exports={createUser,getUser,deleteUser,changepassword,userLogin,userLogout,getUserByEmail,roomList}
 
 // helper method
 async function isObjId(id){

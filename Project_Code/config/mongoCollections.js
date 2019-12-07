@@ -41,8 +41,8 @@ module.exports = {
 *                         }]
 *            }]
 *
-*   2. ROOMS
-*            [{
+*   ROOMS
+*             [{
 *               "_id":          (objectId),
 *               "roomTitle":    (String),
 *               "roomDesc":     (String),

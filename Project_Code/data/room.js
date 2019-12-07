@@ -1,6 +1,4 @@
-
 // All the functions that are related to rooms
-
 const mongo = require('mongodb');
 const mongoCollections = require('../config/mongoCollections');
 const passHashFn = require('password-hash');
@@ -47,7 +45,8 @@ async function createRoom(roomTitle,roomDesc,creatorId,limit){
     const updated=await userColl.updateOne( { _id : i },{ $push: { "roomList": { roomId:insertedInfo.insertedId,flairLevel:0} } });
     if(updated.matchedCount === 0) throw "Error: the post cannot be updated!!";
 
-    return true;
+    // return objectid of the created room
+    return insertedInfo.insertedId;
 }
 
 // Helper function: a universally unique identifier generator, sourced from : https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -58,6 +57,7 @@ function uuidv4() {
           return v.toString(16);
         });
 }
+
 function generateUUID() { // Public Domain/MIT
     var d = new Date().getTime();//Timestamp
     var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
@@ -87,26 +87,25 @@ async function deleteRoom(roomId,userId){
     //checking user level
     var userArray = await userColl.find({_id:useri}).toArray();
     if(userArray.length === 0) throw "Error: a user with the given id does not exist!";
-    
+    console.log(userArray[0]._id);
     var roomArray = await roomsColl.find({_id:roomi}).toArray();
     if(roomArray.length === 0) throw "Error: a room with the given id does not exist!";
-    
-    if(userArray[0]._id !== roomArray[0].creatorId) throw "Error: this user is not the room creator, hence he can't delete it";
+    console.log(roomArray[0].creatorId);
+    if(userArray[0]._id.toString() != roomArray[0].creatorId.toString()) throw "Error: this user is not the room creator, hence he can't delete it";
     
     //delete room from each user's list
     var memberList = roomArray[0].members;
     for(var i=0;i<memberList.length;i++){
-        var updatedInfo = await userColl.update({_id:memberList[i].userId},{$pull:{"roomList":roomi}});
+        var updatedInfo = await userColl.updateOne({_id:memberList[i].userId},{$pull:{roomList:{"roomId":roomi}}});
         if(updatedInfo.matchedCount == 0) throw "Error: User's roomlist could not be updated";
     }
     
     //delete room
-    roomColl.deleteOne({_id:roomi});
+    roomsColl.deleteOne({_id:roomi});
 
     return roomArray[0];
 
 } 
-
 
 // edit room
 async function editRoom(roomId,userId,roomTitle,roomDesc,limit){
@@ -174,11 +173,11 @@ async function addUser(userId,roomId){
     if(roomArray[0].members.length == roomArray.limit) throw "Error: Max limit has been reached!";
 
     //update user's roomlist
-    const userupdated=await userColl.update( { _id : useri },{ $push: { "roomList":{roomId:roomi,flairLevel:3} } });
+    const userupdated=await userColl.updateOne( { _id : useri },{ $push: { "roomList":{roomId:roomi,flairLevel:3} } });
     if(userupdated.matchedCount === 0) throw "Error: the user's roomList cannot be updated!!";
 
     //update room's member list
-    const roomupdated= await roomsColl.update( { _id : roomi },{ $push: { "members":{flairTitle:"User",flairLevel: 3,userId:useri}} });
+    const roomupdated= await roomsColl.updateOne( { _id : roomi },{ $push: { "members":{flairTitle:"User",flairLevel: 3,userId:useri}} });
     if(roomupdated.matchedCount === 0) throw "Error: the room's memberlist cannot be updated!!";
 
     return true;
@@ -188,7 +187,6 @@ async function addUser(userId,roomId){
 async function removeUser(userId,roomId){
     if(!userId) throw "Error: The param userId does not exist";
     var useri = await isObjId(userId);
-
     if(!roomId) throw "Error: The param roomId does not exist";
     var roomi = await isObjId(roomId);
 
@@ -201,17 +199,17 @@ async function removeUser(userId,roomId){
     if(userArray.length == 0) throw "Error: user with given id does not exist";
 
     //Check if room is empty
-    if(roomsArray[0].members.length == 0) throw "Error: the room list is already empty";
+    if(roomArray[0].members.length == 0) throw "Error: the room list is already empty";
 
     //Check if user to be deleted is the creator
     if(userArray[0]._id == roomArray[0].creatorId) throw "Error: Cannot remove the room creator";
 
     //update user's roomlist
-    const userupdated= await userColl.update( { _id : useri },{ $pull: { "roomList":{roomId:roomi} } });
+    const userupdated= await userColl.updateOne( { _id : useri },{ $pull: { "roomList":{roomId:roomi} } });
     if(userupdated.matchedCount === 0) throw "Error: the user's roomList cannot be updated!!";
 
     //update room's member list
-    const roomupdated= await roomsColl.update( { _id : roomi },{ $pull: { "members":{userId:useri}} });
+    const roomupdated= await roomsColl.updateOne( { _id : roomi },{ $pull: { "members":{userId:useri}} });
     if(roomupdated.matchedCount === 0) throw "Error: the room's memberlist cannot be updated!!";
 
     return true;
@@ -334,7 +332,6 @@ async function sendMessage(userId,roomId,text){
     return message;
 }
 
-
 //  upvote
 async function upVote(roomId,userId,time,text){
     if(!text || typeof(text) !='string') throw "Error: text param is invalid";
@@ -351,6 +348,7 @@ async function upVote(roomId,userId,time,text){
 
     return true;
 }
+
 //  downvote
 async function downVote(roomId,userId,time,text){
     if(!text || typeof(text) !='string') throw "Error: text param is invalid";
@@ -371,17 +369,16 @@ async function downVote(roomId,userId,time,text){
 //  getroom
 async function getRoom(roomId){
     if(!roomId) throw "Error: The param userId does not exist";
-    var roomi = await isObjId(roomId);
+    var i = await isObjId(roomId);
     var roomsColl = await roomsCollection();
 
-    var roomsArray = await roomsColl.find({_id:roomi}).toArray();
+    var roomsArray = await roomsColl.find({_id:i}).toArray();
     if(roomsArray.length == 0) throw "Error: room with given id does not exist";
 
     return roomsArray[0];
 }
 
 //  list of users -> use getRoom
-
 //  list of users with level less than current user's
 async function lowerLevels(roomId,currLevel){
     if(!currLevel || currLevel<0 || currLevel>3) throw "Error: The param currLevel does not exist or is invalid";
@@ -394,30 +391,6 @@ async function lowerLevels(roomId,currLevel){
 }
 
 module.exports={createRoom,deleteRoom,editRoom,addUser,removeUser,changeFlair,changeLevel,sendMessage,upVote,downVote,getRoom,lowerLevels}
-// *   ROOMS
-//                  [{
-//     *               "_id":          (objectId),
-//     *               "roomTitle":    (String),
-//     *               "roomDesc":     (String),
-//     *               "inviteCode":   (String),
-//     *               "members":  [{
-//     *                               "flairTitle": (String),
-//     *                               "flairLevel": (Integer -> 0 = Creator, 1-3 = Other levels),
-//     *                               "userId":     (ObjectId)
-//     *                           }],
-//     *               "creatorId": (ObjectId),
-//     *               "limit":        (Integer),
-//     *               "chat": [{
-//     *                               "userId":   (ObjectId),
-//     *                               "time":     (Date),
-//     *                               "text":     (String),
-//     *                               "votes":  (Integer)
-//     *                        }]
-//     *            }]
-// *   Level 0 -> Creator,
-// *   Level 1 -> everything except delete room,
-// *   Level 2 -> add/remove people lower level than them, edit flair titles
-// *   Level 3 -> text
 
 // HELPER FUNCTION - used to check if input is a valid objectId
 async function isObjId(id){
