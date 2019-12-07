@@ -162,7 +162,7 @@ async function userLogin(userEmail,userPassword){
     var inserted = onlineColl.insertOne({userId: userArray[0]._id})
     if (inserted.insertedCount === 0) throw 'Error: creating online collection failed!';
 
-    return true
+    return userArray[0];
 }
 
 // logout
