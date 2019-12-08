@@ -34,7 +34,7 @@ module.exports = {
 *                "lastName": (String),
 *                "email":    (String),
 *                "password": (String -> Output of a hashfunction),
-*                "type":     (String -> Student, Mentor or Teacher)
+*                "online":    (boolean),
 *                "roomList": [{
 *                            roomId:     (objectId),
 *                            flairLevel: (Integer -> 0 = Creator, 1-3 = Other levels)
@@ -65,11 +65,4 @@ module.exports = {
 *   Level 1 -> everything except delete room,
 *   Level 2 -> add/remove people lower level than them, edit flair titles
 *   Level 3 -> text
-*
-*
-*   3. ONLINE
-*           [{
-*               _id:    (objectId)
-*               userId: (objectId)
-*           }]
 */

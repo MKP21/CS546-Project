@@ -9,14 +9,12 @@ let onlineCollection = mongoCollections.online;
 let roomsCollection = mongoCollections.rooms;
 
 // Create user 
-async function createUser(firstName,lastName,email,password,type){
+async function createUser(firstName,lastName,email,password){
     if(!firstName || typeof(firstName) != "string") throw "Error: firstName param does not exist or is not a String";
     if(!lastName || typeof(lastName) != "string") throw "Error: lastName param does not exist or is not a String";
     if(!email || typeof(email) != "string") throw "Error: email param does not exist or is not a String";
     if(!password || typeof(password) != "string") throw "Error: password param does not exist or is not a String";
     if(password.length < 8) throw "Error: the password is not long enough (minimum 8)";
-    if(!type || typeof(type) != "string") throw "Error: type param does not exist or is not a String";
-    if(type !="Teacher" && type != "Student") throw "Error: type param is neither Teacher nor Student";
     
     // connecting to the user collection
     var userColl = await userCollection();
@@ -38,7 +36,7 @@ async function createUser(firstName,lastName,email,password,type){
         "lastName": lastName,
         "email": email,
         "password": hashedPassword,
-        "type": type,
+        "online": false,
         "roomList": [] // initially, the user will not be a part of any room
     }
 
@@ -152,15 +150,8 @@ async function userLogin(userEmail,userPassword){
     }
 
     // Now we can add current user to "online" collection
-    var onlineColl = await onlineCollection();
-
-    // checking if user is already online
-    var found = await onlineColl.find({userId:userArray[0]._id}).toArray();
-    if(found.length != 0) throw "Error: the user is already logged in";
-
-    // user can finally be added to the online collection
-    var inserted = onlineColl.insertOne({userId: userArray[0]._id})
-    if (inserted.insertedCount === 0) throw 'Error: creating online collection failed!';
+    var makeOnline = await userColl.updateOne({_id:userArray[0]._id},{$set:{online:true}});
+    if(makeOnline.matchedCount == 0) throw "Error: could not update user's online flag";
 
     return userArray[0];
 }
@@ -170,7 +161,6 @@ async function userLogout(userEmail){
     if(!userEmail || typeof(userEmail) != 'string') throw "Error: the userEmail param does not exist";
     userEmail = userEmail.toLowerCase();
 
-    var onlineColl = await onlineCollection();
     var userColl = await userCollection();
     
     //  check if user with given email exists
@@ -178,16 +168,13 @@ async function userLogout(userEmail){
     if(userArray.length === 0) throw "Error: a user with the given id does not exist!";
 
     // check if current user is logged in or not
-    var found = await onlineColl.find({userId:userArray[0]._id}).toArray();
-    if(found.length === 0) throw "Error: the user is already logged out";
-
-    //  removing user object from online 
-    onlineColl.deleteOne({userId:userArray[0]._id});
+    var makeOffline = await userColl.updateOne({_id:userArray[0]._id},{$set:{online:false}});
+    if(makeOffline.matchedCount == 0) throw "Error: could not update user's online flag";
 
     return true;
 }
 
-// list of online users
+// list of rooms a user is part of
 async function roomList(userEmail){
     if(!userEmail || typeof(userEmail) != 'string') throw "Error: the userEmail param does not exist";
     userEmail = userEmail.toLowerCase();

@@ -89,7 +89,19 @@ async function deleteRoom(roomId,userId){
 
     return roomArray[0];
 
-} 
+}
+
+//  getroom
+async function getRoom(roomId){
+    if(!roomId) throw "Error: The param userId does not exist";
+    var i = await isObjId(roomId);
+    var roomsColl = await roomsCollection();
+
+    var roomsArray = await roomsColl.find({_id:i}).toArray();
+    if(roomsArray.length == 0) throw "Error: room with given id does not exist";
+
+    return roomsArray[0];
+}
 
 // edit room
 async function editRoom(roomId,userId,roomTitle,roomDesc,limit){
@@ -310,7 +322,7 @@ async function sendMessage(userId,roomId,text){
         votes:1
     }
 
-    const roomupdated=await roomsColl.update( { _id : roomi},{ $push: { "chat":message}});
+    const roomupdated=await roomsColl.updateOne( { _id : roomi},{ $push: { "chat":message}});
     if(roomupdated.matchedCount === 0) throw "Error: the room's memberlist cannot be updated!!";
 
     return message;
@@ -350,17 +362,7 @@ async function downVote(roomId,userId,time,text){
     return true;
 }
 
-//  getroom
-async function getRoom(roomId){
-    if(!roomId) throw "Error: The param userId does not exist";
-    var i = await isObjId(roomId);
-    var roomsColl = await roomsCollection();
 
-    var roomsArray = await roomsColl.find({_id:i}).toArray();
-    if(roomsArray.length == 0) throw "Error: room with given id does not exist";
-
-    return roomsArray[0];
-}
 
 //  list of users -> use getRoom
 //  list of users with level less than current user's
