@@ -1,0 +1,52 @@
+* {
+  box-sizing: border-box;
+}
+
+html{
+  font-size: 16pt;
+}
+
+body {
+  background: black;
+  font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+  font:white;
+}
+form{
+  color: coral;
+  background: white;
+  padding: 20px;
+}
+
+main {
+  max-width: 75%;
+  margin: auto;
+}
+
+header {
+  color: coral;
+}
+footer {
+  color: white;
+}
+
+
+#error{
+  color:orange;
+  font-size: 20px;
+}
+
+
+h1,h2{
+  color: orange;
+  margin-bottom: 5px;
+}
+
+ul{
+  color: #afafaf;
+  background: white;
+}
+
+li{
+  color: blueviolet;
+
+}

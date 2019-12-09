@@ -1,0 +1,8 @@
+  <ul>
+    {{#each roomsList}}  
+        <li>
+            <a href="room/{{this.roomId}}">{{this.roomName}}</a>
+        </li>
+    {{/each}}
+  </ul>
+  <p><a href="/logout">logout</a></p>

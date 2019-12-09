@@ -1,0 +1,20 @@
+<header>
+    <h1>{{title}}</h1>
+</header>
+<form action="/login" id="login-form" method="POST">
+    <label for="email">Email: </label>
+    <input type="text" id="email" name="email"/>
+    <label for="password">Password: </label>
+    <input type="password" id="password" name="password"/>
+
+    <button type="submit" class="submit-button">Submit</button>
+</form>
+
+
+<p>{{error}}</p>
+<!--
+render a view with a login form for a username and password.
+The form used to submit the POST request to the server must have an id of login-form. 
+The input for the username must have a name/id of username; 
+the input for the password must have name/id of password.
+-->
