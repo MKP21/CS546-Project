@@ -295,7 +295,7 @@ async function changeLevel(userId,roomId,currLevel,flairLevel){
 //  send message
 async function sendMessage(emailId,roomId,text){
     if(!text || typeof(text) !='string') throw "Error: text param is invalid";
-    if(!userId) throw "Error: The param emailId does not exist";
+    if(!emailId) throw "Error: The param emailId does not exist";
 
     if(!roomId) throw "Error: The param roomId does not exist";
     var roomi = await isObjId(roomId);

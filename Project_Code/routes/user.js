@@ -20,6 +20,8 @@ router.get('/', async (req, res) => {
           var rm = await roomFunctions.getRoom(roomsList[i].roomId)
           roomsList[i].roomName = rm.roomTitle;
         }
+
+        
         // render home page with the roomlist and user object to personalize the handlebar      
         res.render('homepage',{title:"Dashboard",roomsList:roomsList})
     } catch (e) {

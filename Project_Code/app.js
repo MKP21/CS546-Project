@@ -83,13 +83,10 @@ io.on('connection', async function(socket){
   socket.on('chat message', async function(msgObj){
     console.log('message: ' + msgObj.msg);
 
-    //m = await roomFunctions.sendMessage(msgObj.email,msgObj.roomId,msgObj.msg);
-    // msgOb.msg
-    // msgObj.roomId
-    // msgObj.email
+    var message = await roomFunctions.sendMessage(msgObj.email,msgObj.roomId,msgObj.msg);
 
     // This will emit the event to all connected sockets
-    io.emit('chat message',msgObj.msg);
+    io.emit('chat message',message.username +": "+ msgObj.msg);
 });
 
 });
