@@ -88,8 +88,7 @@ const io=require("socket.io")(server);
 
 io.on('connection', async function(socket){
   console.log('a user connected');
-  //var userObj = await userFunctions.getUserByEmail(req.session.uMail);
-  
+  //var userObj = await userFunctions.getUserByEmail(req.session.uMail)
 
   // this will be called when send is pressed
   socket.on('chat message', function(msg){
@@ -101,7 +100,7 @@ io.on('connection', async function(socket){
     
     //userObj.firstName + " " + userObj.lastName + ": " +
     // This will emit the event to all connected sockets
-    io.emit('chat message',msg); 
+    io.emit('chat message',msg);
 });
 
 });
