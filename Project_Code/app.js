@@ -2,20 +2,14 @@
 const express = require('express');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
-const bcrypt = require('bcryptjs');
 const bodyparser = require('body-parser');
 const static = express.static(__dirname + '/public');
 const configRoutes=require('./routes');
 const roomFunctions=require('./data/room');
 const userFunctions=require('./data/user');
 
-// socket.io session and cookie session
-const sharedsession = require("express-socket.io-session");
-const cookie = require('cookie');
-
 // We create our express instance:
 const app = express();
-
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -81,22 +75,21 @@ server =app.listen(3000, function() {
 
 const io=require("socket.io")(server);
 
-// creating a shared cookie based off on express session
-// io.use(sharedsession(session, {
-//   autoSave:true
-// }));
-
 io.on('connection', async function(socket){
+  // this will run when socket is connected
   console.log('a user connected');
-  //var userObj = await userFunctions.getUserByEmail(req.session.uMail)
 
-  // this will be called when send is pressed
-  socket.on('chat message', function(msg){    
-    console.log('message: ' + msg);
-    
-    //userObj.firstName + " " + userObj.lastName + ": " +
+  // When frontend js makes a socket.emit() call
+  socket.on('chat message', async function(msgObj){
+    console.log('message: ' + msgObj.msg);
+
+    //m = await roomFunctions.sendMessage(msgObj.email,msgObj.roomId,msgObj.msg);
+    // msgOb.msg
+    // msgObj.roomId
+    // msgObj.email
+
     // This will emit the event to all connected sockets
-    io.emit('chat message',msg);
+    io.emit('chat message',msgObj.msg);
 });
 
 });

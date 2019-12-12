@@ -4,8 +4,8 @@ const mongoCollections = require('../config/mongoCollections');
 const passHashFn = require('password-hash');
 
 let userCollection = mongoCollections.users;
-let onlineCollection = mongoCollections.online;
 let roomsCollection = mongoCollections.rooms;
+let userFunctions = require('./user');
 
 //  create room
 async function createRoom(roomTitle,roomDesc,creatorId,limit){
@@ -293,10 +293,9 @@ async function changeLevel(userId,roomId,currLevel,flairLevel){
 }
 
 //  send message
-async function sendMessage(userId,roomId,text){
+async function sendMessage(emailId,roomId,text){
     if(!text || typeof(text) !='string') throw "Error: text param is invalid";
-    if(!userId) throw "Error: The param userId does not exist";
-    var useri = await isObjId(userId);
+    if(!userId) throw "Error: The param emailId does not exist";
 
     if(!roomId) throw "Error: The param roomId does not exist";
     var roomi = await isObjId(roomId);
@@ -305,9 +304,7 @@ async function sendMessage(userId,roomId,text){
     var roomArray = await roomsColl.find({_id:roomi}).toArray();
     if(roomArray.length == 0) throw "Error: room with given id does not exist";
 
-    let userColl = await userCollection();
-    var userArray = await userColl.find({_id:useri}).toArray();
-    if(userArray.length == 0) throw "Error: user with given id does not exist";
+    var userObj = await userFunctions.getUserByEmail(emailId);
 
     var today = new Date();
     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -316,7 +313,7 @@ async function sendMessage(userId,roomId,text){
     //update room's chat
 
     var message = {
-        userId:useri,
+        username:userObj.firstName + " " + userObj.lastName,
         text:text,
         time:dateTime,
         votes:1
@@ -329,34 +326,35 @@ async function sendMessage(userId,roomId,text){
 }
 
 //  upvote
-async function upVote(roomId,userId,time,text){
+async function upVote(roomId,emailId,time,text){
     if(!text || typeof(text) !='string') throw "Error: text param is invalid";
-    if(!userId) throw "Error: The param userId does not exist";
+    if(!emailId) throw "Error: The param userId does not exist";
     if(!roomId) throw "Error: The param userId does not exist";
     if(!time) throw "Error: the time parameter does not exist!";
 
-    var useri = await isObjId(userId);
+    var userObj = await userFunctions.getUserByEmail(emailId);
+
     var roomi = await isObjId(roomId);
     
     const roomsColl = await roomsCollection();
-    var updatedInfo = await roomsColl.update({_id:roomi,'chat.userId':useri,'chat.time':time,'chat.text':text},{$inc:{'chat.$.votes':1}})
+    var updatedInfo = await roomsColl.update({_id:roomi,'chat.username':userObj.firstName + " " + userObj.lastName,'chat.time':time,'chat.text':text},{$inc:{'chat.$.votes':1}})
     if(updatedInfo.matchedCount === 0) throw "Error: the number of upvotes could not be updated!!";
 
     return true;
 }
 
 //  downvote
-async function downVote(roomId,userId,time,text){
+async function downVote(roomId,emailId,time,text){
     if(!text || typeof(text) !='string') throw "Error: text param is invalid";
-    if(!userId) throw "Error: The param userId does not exist";
+    if(!emailId) throw "Error: The param userId does not exist";
     if(!roomId) throw "Error: The param userId does not exist";
     if(!time) throw "Error: the time parameter does not exist!";
 
-    var useri = await isObjId(userId);
+    var userObj = await userFunctions.getUserByEmail(emailId);
     var roomi = await isObjId(roomId);
     
     const roomsColl = await roomsCollection();
-    var updatedInfo = await roomsColl.update({_id:roomi,'chat.userId':useri,'chat.time':time,'chat.text':text},{$inc:{'chat.$.votes':-1}})
+    var updatedInfo = await roomsColl.update({_id:roomi,'chat.username':userObj.firstName + " " + userObj.lastName,'chat.time':time,'chat.text':text},{$inc:{'chat.$.votes':-1}})
     if(updatedInfo.matchedCount === 0) throw "Error: the number of upvotes could not be updated!!";
 
     return true;

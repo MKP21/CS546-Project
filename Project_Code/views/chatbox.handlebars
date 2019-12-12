@@ -8,19 +8,23 @@
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   $(function () {
-    //{{usermail}}
     var email = "{{usermail}}";
     var roomId = "{{roomId}}"
 
     var socket = io();
     $('form').submit(function(e){
       e.preventDefault(); // prevents page reloading
-      socket.emit('chat message',email+": " + $('#m').val());
+      
+      // makes call to backend socket.io
+      socket.emit('chat message',{msg:$('#m').val(),email:email,roomId:roomId});
+
+      // reseting value in textarea to emptry
       $('#m').val('');
       return false;
     });
+
     socket.on('chat message', function(msg){
-      $('#messages').append($('<li>').text(msg));
+      $('#messages').append($('<p>').text(msg));
     });
   });
 </script>
