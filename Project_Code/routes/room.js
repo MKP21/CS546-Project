@@ -12,8 +12,8 @@ router.get('/:id', async (req, res) => {
     let m = req.url;
     m = m.substring(1);
     var roomObj = await roomFunctions.getRoom(m);
-
-    res.render('chatbox',{title:roomObj.roomTitle,usermail:"ms@dundermifflin.com",roomId:m});
+    
+    res.render('chatbox',{title:roomObj.roomTitle,usermail:req.session.uMail,roomId:m});
   } catch (e) {
     console.log(e)
     res.status(400).render('error',{title:"error",post:e});

@@ -62,7 +62,7 @@ module.exports = {
 *                        }]
 *            }]
 *   Level 0 -> Creator,
-*   Level 1 -> everything except delete room,
+*   Level 1 -> admin, everything except delete room,
 *   Level 2 -> add/remove people lower level than them, edit flair titles
 *   Level 3 -> text
 */

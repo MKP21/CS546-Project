@@ -91,11 +91,7 @@ io.on('connection', async function(socket){
   //var userObj = await userFunctions.getUserByEmail(req.session.uMail)
 
   // this will be called when send is pressed
-  socket.on('chat message', function(msg){
-
-    var ses = cookie.parse(socket.handshake.headers.cookie);
-    var exps = cookie.parse(ses.AuthCookie);
-    
+  socket.on('chat message', function(msg){    
     console.log('message: ' + msg);
     
     //userObj.firstName + " " + userObj.lastName + ": " +
