@@ -1,19 +1,63 @@
 <div>
-    <form action="/room/updateroom" method="POST">
-        <label for="title">Title: </label>
-        <input type="text" id="title" name="title" placeholder=""><br>
-        <label for="description">Room Description: </label>
-        <input type="text" id="description" name="description" placeholder=""><br>
-        <label for="limit">Room Limit: </label>
-        <input type="number" step="1" id="limit" name="limit" placeholder=""><br>
-        <!--
+    <div>
+        <form action="/room/updateroom" method="POST">
+            <label for="title">Title: </label>
+            <input type="text" id="title" name="title" placeholder=""><br>
+            <label for="description">Room Description: </label>
+            <input type="text" id="description" name="description" placeholder=""><br>
+            <label for="limit">Room Limit: </label>
+            <input type="number" step="1" id="limit" name="limit" placeholder=""><br>
+            <!--
         <label for="editmember">Edit Members </label>
         <input type="button" id="editmember" name:"editmember" placeholder=""> -->
-        <button type="submit">Submit</button>
-    </form>
-    {{#if message}}
-    <p>{{this.message}}</p>
-    {{/if}}
-    <a href="/room/{{roomid}}">Go back to Room</a>
+            <button type="submit">Submit</button>
+        </form>
+        {{#if message}}
+        <p>{{this.message}}</p>
+        {{/if}}
+    </div>
+    <div>
+        <h3>Change access levels</h3>
+        <p>Select if you want to promote or demote:</p>
+        <form action="/room/levels" method="POST">
+            <ul>
+                {{#each lowerLevels}}
+                <li>
+                    <label for="action">{{this.username}} </label>
+                    <select name="action">
+                        <option value="" selected>Do nothing</option>
+                        <option value="{{this.userId}},1,{{this.flairLevel}}">promote</option>
+                        <option value="{{this.userId}},0,{{this.flairLevel}}">demote</option>
+                    </select>
+                </li>
+                {{/each}}
+            </ul>
+            <button type="submit">Submit</button>
+        </form>
+        {{#if message3}}
+        <p>{{this.message3}}</p>
+        {{/if}}
+    </div>
+    <div>
+        <h3>Kick users</h3>
+        <p>Select the members you want to kick</p>
+        <form action="/room/remove" method="POST">
+            {{#each lowerLevels}}
+            <label for="action">{{this.username}} </label>
+            <select name="action">
+                <option value="" selected>Do nothing</option>
+                <option value="{{this.userId}}">kick</option>
+            </select>
+            {{/each}}
+            <button type="submit">Submit</button>
+        </form>
+        {{#if message2}}
+        <p>{{this.message2}}</p>
+        {{/if}}
+    </div>
+</div>>
 
+<a href="/room/{{roomid}}">Go back to Room</a>
 </div>
+
+<script src="/public/levels.js">

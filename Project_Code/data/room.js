@@ -390,13 +390,24 @@ async function downVote(roomId, emailId, time, text) {
 
 //  list of users -> use getRoom
 //  list of users with level less than current user's
-async function lowerLevels(roomId, currLevel) {
-    if (!currLevel || currLevel < 0 || currLevel > 3) throw "Error: The param currLevel does not exist or is invalid";
-
+async function lowerLevels(roomId, uMail) {
+    if (!uMail) throw "there is no uMail param in the function";
+    var userObj = await userFunctions.getUserByEmail(uMail);
     var roomi = await isObjId(roomId);
-    var roomdetails = await getRoom(roomi);
-    var lusersArray = await roomsColl.find({ _id: roomi, 'members.flairLevel': { $gt: currLevel - 1 } }).toArray();
-
+    var currLevel = 3;
+    for (var i = 0; i < userObj.roomList.length; i++) {
+        if (userObj.roomList[i].roomId.equals(roomi)) {
+            currLevel = userObj.roomList[i].flairLevel;
+            break;
+        }
+    }
+    var roomsObj = await getRoom(roomId);
+    var lusersArray = []
+    for (var i = 0; i < roomsObj.members.length; i++) {
+        if (roomsObj.members[i].flairLevel > currLevel) {
+            lusersArray.push(roomsObj.members[i])
+        }
+    }
     return lusersArray;
 }
 

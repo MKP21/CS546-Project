@@ -39,8 +39,19 @@ router.get('/:id/edit', async (req, res) => {
       res.redirect('/user');
     }
     m = req.session.roomid;
-
-    res.render('editroom', { title: "Edit Room", roomid: m });
+    var lowerLevels = await roomFunctions.lowerLevels(m, req.session.uMail);
+    if (lowerLevels.length == 0) {
+      // array is empty
+      // render error -> you cant access
+      res.render('editroom', { title: "Edit Room", message2: "You can't access this at your current level", roomid: m });
+    } else {
+      //get username for each user
+      for (var i = 0; i < lowerLevels.length; i++) {
+        var obj = await userFunctions.getUser(lowerLevels[i].userId)
+        lowerLevels[i].username = obj.firstName + " " + obj.lastName;
+      }
+      res.render('editroom', { title: "Edit Room", roomid: m, lowerLevels: lowerLevels });
+    }
   } catch (e) {
     res.render('editroom', { title: "Edit Room", message: e, roomid: m })
   }
