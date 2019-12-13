@@ -164,7 +164,15 @@ async function addUser(userId,roomId){
     let userColl = await userCollection();
     var userArray = await userColl.find({_id:useri}).toArray();
     if(userArray.length == 0) throw "Error: user with given id does not exist";
-
+    var roomL = userArray[0].roomList;    
+    for(var i=0;i<roomL.length;i++){
+        if(roomL[i].roomId.equals(roomi)){
+            return "You've already joined the room!"
+        }else{
+            console.log('a');
+        }
+    }
+    
     // checking if room limit is reached
     if(roomArray[0].members.length == roomArray.limit) throw "Error: Max limit has been reached!";
 
@@ -176,7 +184,23 @@ async function addUser(userId,roomId){
     const roomupdated= await roomsColl.updateOne( { _id : roomi },{ $push: { "members":{flairTitle:"User",flairLevel: 3,userId:useri}} });
     if(roomupdated.matchedCount === 0) throw "Error: the room's memberlist cannot be updated!!";
 
-    return true;
+    return "added to the room";
+}
+
+async function checkEntryCode(entryCode){
+    if(!entryCode) throw "Error: the entrycode param is empty!!";
+    if(typeof(entryCode) != "string") throw "Error: the entry code is not a string";
+    
+    var roomsColl = await roomsCollection();
+    var roomArray = await roomsColl.find({inviteCode:entryCode}).toArray();
+    
+    var returnObj={};
+    if(roomArray.length == 0){
+        returnObj.none = "Invalid entry code"
+    }else{
+        returnObj = roomArray[0];
+    }
+    return returnObj;
 }
 
 //  remove user
@@ -374,7 +398,7 @@ async function lowerLevels(roomId,currLevel){
     return lusersArray;
 }
 
-module.exports={createRoom,deleteRoom,editRoom,addUser,removeUser,changeFlair,changeLevel,sendMessage,upVote,downVote,getRoom,lowerLevels}
+module.exports={createRoom,deleteRoom,editRoom,addUser,removeUser,changeFlair,changeLevel,sendMessage,upVote,downVote,getRoom,lowerLevels,checkEntryCode}
 
 // HELPER FUNCTION - used to check if input is a valid objectId
 async function isObjId(id){

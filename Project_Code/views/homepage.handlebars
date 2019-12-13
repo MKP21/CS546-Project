@@ -1,8 +1,12 @@
-  <ul>
+  <div>  
+    <ul>
     {{#each roomsList}}  
         <li>
             <a href="room/{{this.roomId}}">{{this.roomName}}</a>
         </li>
     {{/each}}
-  </ul>
+    </ul>
+  </div>
+  <a href="room/joinRoom"><button>Join a room</button></a>
+
   <p><a href="/logout">logout</a></p>

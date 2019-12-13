@@ -13,7 +13,7 @@ const constructormethod = app=>{
     app.use("/", outRoutes)
 
     app.use("*", (req, res) => {
-        res.status(404).json({ error: "Not found" });
+        res.status(400).render('error',{title:"error",message:"Oops!!! you have reached an undefined path reached!"});
     });
     
 }

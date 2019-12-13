@@ -42,7 +42,7 @@ app.use('/',function(req, res, next) {
 });
 
 // 2.Middleware for user route
-app.get('/user', async (req, res, next) => {
+app.use('/user', async (req, res, next) => {
   let sess = req.session; 
   if(!sess.uMail){
     //If a user is not logged in
