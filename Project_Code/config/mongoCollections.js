@@ -55,7 +55,7 @@ module.exports = {
 *               "creatorId": (ObjectId),
 *               "limit":        (Integer),
 *               "chat": [{
-*                               "userId":   (ObjectId),
+*                               "username":   (ObjectId),
 *                               "time":     (Date),
 *                               "text":     (String),
 *                               "votes":  (Integer)

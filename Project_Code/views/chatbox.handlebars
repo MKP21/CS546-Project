@@ -1,8 +1,68 @@
-<p><a href="/room/{{roomId}}/edit"> Edit Room</a> </p>
+<!-- left side pane -->
+<div>
+  <h3>Room List</h3>
+  <ul>
+    {{#each roomsList}}
+    <li>
+      <a href="/room/{{this.roomId}}">{{this.roomName}}</a>
+    </li>
+    {{/each}}
+  </ul>
+  <p><a href="/room/{{roomId}}/edit"> Edit Room</a> </p>
+  <a href="/room/joinRoom"><button>Join</button></a>
+  <a href="/room/createRoom"><button>Create</button></a>
+  <p><a href="/user/changepswd"> Change Password</a></p>
+  <p><a href="/logout">logout</a></p>
+</div>
 
-<ul id="messages"></ul>
-<form action="">
-<input id="m" autocomplete="off" /><button>Send</button>
+<!-- middlepane, chatbox-->
+<div class="middlepane">
+  <div class="w3-container w3-teal w3-center w3-round-large w3-margin">
+    <h2>Room Title</h2>
+
+    <!-- The Modal -->
+    <button id="myBtn">Description</button>
+
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content"> <span class="close">&times;</span>
+        <p>{{desc}}</p>
+        <p>{{invitecode}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="w3-container" id="messages">
+
+    {{#each history}}
+
+    <p>{{this.username}} : {{this.text}}</p>
+
+    {{/each}}
+
+  </div>
+
+  <div id="input_zone" class="w3-display-middle">
+    <form action="">
+      <input id="m" autocomplete="off" />
+      <div>
+        <button class="w3-bar w3-wide w3-pink  w3-border w3-border-red w3-round-large">Send</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!--- right side pane-->
+<div>
+  <!-- online users list -->
+  <h4>Online Users</h4>
+  <ul>
+    {{#each listOnline}}
+    <li>
+      {{this}}
+    </li>
+    {{/each}}
+  </ul>
+</div>
 
 
 <script src="/socket.io/socket.io.js"></script>
@@ -13,18 +73,18 @@
     var roomId = "{{roomId}}"
 
     var socket = io();
-    $('form').submit(function(e){
+    $('form').submit(function (e) {
       e.preventDefault(); // prevents page reloading
-      
+
       // makes call to backend socket.io
-      socket.emit('chat message',{msg:$('#m').val(),email:email,roomId:roomId});
+      socket.emit('chat message', { msg: $('#m').val(), email: email, roomId: roomId });
 
       // reseting value in textarea to emptry
       $('#m').val('');
       return false;
     });
 
-    socket.on('chat message', function(msg){
+    socket.on('chat message', function (msg) {
       $('#messages').append($('<p>').text(msg));
     });
   });
@@ -32,3 +92,4 @@
 <script>
   var socket = io();
 </script>
+<script src="../public/modal.js"></script>

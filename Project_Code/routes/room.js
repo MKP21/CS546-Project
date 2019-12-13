@@ -78,15 +78,31 @@ router.get('/:id', async (req, res) => {
     // get list of online users
     let m = req.url;
     m = m.substring(1);
+
     req.session.roomid = m;
     var roomObj = await roomFunctions.getRoom(m);
+    var listOnline = await roomFunctions.getonlineusers(m);
+    var userObj = await userFunctions.getUserByEmail(req.session.uMail);
+    var roomsList = userObj.roomList;
+    for (let i = 0; i < roomsList.length; i++) {
+      var rm = await roomFunctions.getRoom(roomsList[i].roomId)
+      roomsList[i].roomName = rm.roomTitle;
+    }
 
-    res.render('chatbox', { title: roomObj.roomTitle, usermail: req.session.uMail, roomId: m });
+    res.render('chatbox', {
+      title: roomObj.roomTitle,
+      usermail: req.session.uMail, // for socket.io
+      roomsList: roomsList,
+      roomId: m,
+      history: roomObj.chat,
+      listOnline: listOnline,
+      invitecode: roomObj.inviteCode,
+      desc: roomObj.roomDesc
+    });
   } catch (e) {
     console.log(e)
     res.status(400).render('error', { title: "error", message: e });
   }
 });
-
 
 module.exports = router;

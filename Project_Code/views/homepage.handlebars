@@ -1,4 +1,6 @@
+<!-- left side pane -->
 <div>
+  <h3>Room List</h3>
   <ul>
     {{#each roomsList}}
     <li>
@@ -7,7 +9,9 @@
     {{/each}}
   </ul>
 </div>
+<!-- middle pane will be empty-->
 
-<a href="room/joinRoom"><button>Join a room</button></a>
+<a href="room/joinRoom"><button>Join</button></a>
+<a href="room/createRoom"><button>Create</button></a>
 <p><a href="/user/changepswd"> Change Password</a></p>
 <p><a href="/logout">logout</a></p>

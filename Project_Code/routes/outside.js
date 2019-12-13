@@ -81,10 +81,11 @@ router.post('/signup', async function (req, res) {
     res.render('signup', { message: e });
   }
 })
-router.get('/logout', (req, res) => {
+router.get('/logout', async (req, res) => {
   // this comes after '/' middleware
   var ses = req.session;
   if (ses.uMail) {
+    var m = await userFunctions.userLogout(ses.uMail);
     req.session.destroy();
     res.render('logout', { title: "logged-out" }); // page with logout message
   } else {
