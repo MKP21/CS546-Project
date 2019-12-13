@@ -6,12 +6,13 @@
     <div><label for="invitecode">Invite Code</label></div>
 
     <div>
-        <input type="text" id="invitecode" name="invitecode"/>
+        <input type="text" id="invitecode" name="invitecode" />
     </div>
     <div>
         <button type="submit" class="submit-button">join</button>
     </div>
 
 </form>
-
+{{#if this.error}}
 <p>{{error}}</p>
+{{/if}}

@@ -104,47 +104,47 @@ async function getRoom(roomId){
 }
 
 // edit room
-async function editRoom(roomId,userId,roomTitle,roomDesc,limit){
+async function editRoom(roomId, userId, roomTitle, roomDesc, limit) {
     let userColl = await userCollection();
     var roomsColl = await roomsCollection();
 
-    
-    if(!userId) throw "Error: The parameter for id does not exist!!";
+
+    if (!userId) throw "Error: The parameter for id does not exist!!";
     var useri = await isObjId(userId); //if string, it converts it to objectID
 
-    if(!roomId) throw "Error: The parameter for id does not exist!!";
+    if (!roomId) throw "Error: The parameter for id does not exist!!";
     var roomi = await isObjId(roomId); //if string, it converts it to objectID
 
     // check user level, 0 or 1
-    var userArray = await userColl.find({_id:useri}).toArray();
-    if(userArray.length == 0) throw "Error: user with given id does not exist";
+    var userArray = await userColl.find({ _id: useri }).toArray();
+    if (userArray.length == 0) throw "Error: user with given id does not exist";
 
-    var roomArray = await roomsColl.find({_id:roomi}).toArray();
-    if(roomArray.length == 0) throw "Error: room with given id does not exist";
+    var roomArray = await roomsColl.find({ _id: roomi }).toArray();
+    if (roomArray.length == 0) throw "Error: room with given id does not exist";
 
-    var memberList =roomArray[0].members; 
-    for(var m=0;m<memberList.length;m++){
-        if(memberList[i].userId == useri && (memberList[i].flairLevel!=0 || memberList[i].flairLevel!=1)){
+    var memberList = roomArray[0].members;
+    for (var m = 0; m < memberList.length; m++) {
+        if (memberList[m].userId == useri && (memberList[m].flairLevel != 0 || memberList[m].flairLevel != 1)) {
             throw "Error: this user does not have the access to edit this room";
         }
     }
 
     // verifying correctness of all the params
-    if(!roomTitle){
+    if (!roomTitle) {
         roomTitle = roomArray[0].roomTitle;
-    }else if(typeof(roomTitle)!='string') throw "Error: The parameter roomTitle is not a string";
+    } else if (typeof (roomTitle) != 'string') throw "Error: The parameter roomTitle is not a string";
 
-    if(!roomDesc){
+    if (!roomDesc) {
         roomDesc = roomArray[0].roomDesc;
-    }else if(typeof(roomDesc)!='string') throw "Error: The parameter roomDesc is not a string";
+    } else if (typeof (roomDesc) != 'string') throw "Error: The parameter roomDesc is not a string";
 
-    if(!limit){
+    if (!limit) {
         limit = roomArray[0].limit;
-    }else if(!Number.isInteger(limit)) throw "Error: The parameter limit is not an integer";
+    } else if (!Number.isInteger(limit)) throw "Error: The parameter limit is not an integer";
 
     // edit room
-    const updated=await roomsColl.update( { _id : roomi },{ $set: { roomTitle:roomTitle, roomDesc:roomDesc, limit:limit } });
-    if(updated.matchedCount === 0) throw "Error: the post cannot be updated!!";
+    const updated = await roomsColl.updateOne({ _id: roomi }, { $set: { roomTitle: roomTitle, roomDesc: roomDesc, limit: limit } });
+    if (updated.matchedCount === 0) throw "Error: the post cannot be updated!!";
 
     return true;
 }

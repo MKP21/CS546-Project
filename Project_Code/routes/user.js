@@ -31,7 +31,34 @@ router.get('/', async (req, res) => {
 });
 
 // this will go to edit user details
+router.get('/changepswd', async (req, res) => {
+  try{
+    res.render('changepassword', { title: "Change Password" })
+  }catch(e){
+    res.render('error', { title: "error",message:e })
+  }
 
+});
+
+router.post('/updatepswd', async (req, res) => {
+  try{
+    var userobj = await userFunctions.getUserByEmail(req.session.uMail);
+    var id = userobj._id;
+    let oldpassword = req.body.oldpassword;
+    let newpassword = req.body.newpassword;
+    let confirmpassword = req.body.confirmpassword;
+  
+    let x = await userFunctions.changepassword(id, oldpassword, newpassword, confirmpassword);
+    if (x == true) {
+      res.render('changepassword', { message: "Password changed successfully ! " });
+    }
+    else {
+      res.render('changepassword', { message: "Password could not be updated !" });
+    }  
+  }catch(e){
+    res.render('changepassword', { title: "error",message:e })
+  }
+});
 
 
 module.exports = router;

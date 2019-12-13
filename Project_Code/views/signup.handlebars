@@ -1,0 +1,17 @@
+<div class="center">
+    <form action="/signup" method="POST">
+        <Label for="fname">First Name : </Label>
+        <input type="text" id="fname" name="fname" required><br>
+        <Label for="lname">Last Name : </Label>
+        <input type="text" id="lname" name="lname" required><br>
+        <Label for="email">Email : </Label>
+        <input type="email" id="email" name="email" required><br>
+        <Label for="password">Create Password : </Label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="submit">Sign-up</button>
+    </form>
+    {{#if message}}
+    <p>{{this.message}}</p>
+    {{/if}}
+    <a href="/">login</a>
+</div>

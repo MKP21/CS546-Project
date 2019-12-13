@@ -112,24 +112,29 @@ async function deleteUser(id){
 }
 
 // changepassword
-async function changepassword(id,oldPassword,newPassword){
-    if(!id) throw "Error: The parameter for id does not exist!!";
-    if(!oldPassword || typeof(oldPassword) != 'string') throw "Error: The parameter for oldPassword does not exist!!";
-    if(!newPassword || typeof(newPassword) != 'string') throw "Error: The parameter for newPassword does not exist!!";
+async function changepassword(id, oldPassword, newPassword, newPassword1) {
+    if (!id) throw "Error: The parameter for id does not exist!!";
+    if (!oldPassword || typeof (oldPassword) != 'string') throw "Error: The parameter for oldPassword does not exist!!";
+    if (!newPassword || typeof (newPassword) != 'string') throw "Error: The parameter for newPassword does not exist!!";
+    if (!newPassword1 || typeof (newPassword1) != 'string') throw "Error: The parameter for newPassword does not exist!!";
 
     var i = await isObjId(id);
     var userColl = await userCollection();
 
-    var userArray = await userColl.find({_id:i}).toArray();
-    if(userArray.length === 0) throw "Error: a user with the given id does not exist!";
+    var userArray = await userColl.find({ _id: i }).toArray();
+    if (userArray.length === 0) throw "Error: a user with the given id does not exist!";
 
-    if(!passHashFn.verify(oldPassword,userArray[0].password)){
+    if (!passHashFn.verify(oldPassword, userArray[0].password)) {
         throw "Error: the old password doesn not match current password";
     }
+    if (newPassword !== newPassword1) {
+        throw "Error: both password dont match each other";
+    }
+
     // convert new password to hash and update the object
     var newPass = passHashFn.generate(newPassword);
-    var updated = await userColl.updateOne({_id:i},{$set: {"password":newPass}});
-    if(updated.matchedCount === 0) throw "Error: the password cannot be updated!!";
+    var updated = await userColl.updateOne({ _id: i }, { $set: { "password": newPass } });
+    if (updated.matchedCount === 0) throw "Error: the password cannot be updated!!";
     return true;
 }
 

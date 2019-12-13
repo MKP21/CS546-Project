@@ -1,0 +1,19 @@
+<div>
+    <form action="/room/updateroom" method="POST">
+        <label for="title">Title: </label>
+        <input type="text" id="title" name="title" placeholder=""><br>
+        <label for="description">Room Description: </label>
+        <input type="text" id="description" name="description" placeholder=""><br>
+        <label for="limit">Room Limit: </label>
+        <input type="number" step="1" id="limit" name="limit" placeholder=""><br>
+        <!--
+        <label for="editmember">Edit Members </label>
+        <input type="button" id="editmember" name:"editmember" placeholder=""> -->
+        <button type="submit">Submit</button>
+    </form>
+    {{#if message}}
+    <p>{{this.message}}</p>
+    {{/if}}
+    <a href="/room/{{roomid}}">Go back to Room</a>
+
+</div>
