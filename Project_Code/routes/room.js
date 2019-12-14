@@ -78,8 +78,76 @@ router.post('/updateroom', async (req, res) => {
     res.render('error', { title: "error", message: e })
   }
 });
+// implements updation on room details
+router.post('/remove', async (req, res) => {
+  try {
+    var x = req.body.action;
+    for (var i = 0; i < x.length; i++) {
+      if (x[i] != "") {
+        var userid = x[i];
+        var del = await roomFunctions.removeUser(userid, req.session.roomid);
+      }
+    }
+    var lowerLevels = await roomFunctions.lowerLevels(m, req.session.uMail);
+    if (lowerLevels.length == 0) {
+      // array is empty
+      // render error -> you cant access
+      res.render('editroom', { title: "Edit Room", message2: "There are no users lower than your priority level!", roomid: m });
+    } else {
+      //get username for each user
+      for (var i = 0; i < lowerLevels.length; i++) {
+        var obj = await userFunctions.getUser(lowerLevels[i].userId)
+        lowerLevels[i].username = obj.firstName + " " + obj.lastName;
+      }
+    }
+    res.render('editroom', { title: "Edit Room", roomid: req.session.roomid, message2: "users succesfully deleted!!", lowerLevels: lowerLevels });
+  } catch (e) {
+    res.render('editroom', { title: "Edit Room", message2: e, roomid: m });
+  }
+});
+// implements updation on room details
+router.post('/levels', async (req, res) => {
+  try {
+    var x = req.body.action;
+    for (var i = 0; i < x.length; i++) {
+      if (x[i] != "") {
+        var action = x[i];
+        //"{{this.userId}},1,{{this.flairLevel}}"
+        m = action.split(",");
+        var targetLevel = m[2];
+        if (m[1] == 1) {
+          // promote
+          targetLevel--;
+        } else {
+          // demote
+          if (m[2] != 3) {
+            targetLevel++;
+          }
+        }
+        var prom = await roomFunctions.changeLevel(m[0], req.session.roomid, targetLevel)
+        console.log(prom);
+      }
+    }
 
+    // calculating new lowerlevels list
+    var lowerLevels = await roomFunctions.lowerLevels(m, req.session.uMail);
+    if (lowerLevels.length == 0) {
+      // array is empty
+      // render error -> you cant access
+      res.render('editroom', { title: "Edit Room", message3: "There are no users lower than your priority level!", roomid: m });
+    } else {
+      //get username for each user
+      for (var i = 0; i < lowerLevels.length; i++) {
+        var obj = await userFunctions.getUser(lowerLevels[i].userId)
+        lowerLevels[i].username = obj.firstName + " " + obj.lastName;
+      }
+    }
+    res.render('editroom', { title: "Edit Room", roomid: req.session.roomid, message3: "users succesfully edited!!", lowerLevels: lowerLevels });
 
+  } catch (e) {
+    res.render('editroom', { title: "Edit Room", message2: e, roomid: m });
+  }
+});
 // when user selects a room, this page will be rendered, it has the chat
 router.get('/:id', async (req, res) => {
   try {

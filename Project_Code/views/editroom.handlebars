@@ -42,13 +42,16 @@
         <h3>Kick users</h3>
         <p>Select the members you want to kick</p>
         <form action="/room/remove" method="POST">
-            {{#each lowerLevels}}
-            <label for="action">{{this.username}} </label>
-            <select name="action">
-                <option value="" selected>Do nothing</option>
-                <option value="{{this.userId}}">kick</option>
-            </select>
-            {{/each}}
+            <ul>
+                {{#each lowerLevels}}
+                <li> <label for="action">{{this.username}} </label>
+                    <select name="action">
+                        <option value="" selected>Do nothing</option>
+                        <option value="{{this.userId}}">kick</option>
+                    </select>
+                </li>
+                {{/each}}
+            </ul>
             <button type="submit">Submit</button>
         </form>
         {{#if message2}}

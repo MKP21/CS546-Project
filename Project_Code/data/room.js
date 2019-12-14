@@ -276,10 +276,8 @@ async function changeFlair(userId, roomId, currLevel, flairTitle) {
 }
 
 //  change user level
-async function changeLevel(userId, roomId, currLevel, flairLevel) {
-    if (!currLevel || !Number.isInteger(currLevel)) throw "Error: param currLevel is incorrect";
-    if (!flairLevel || !Number.isInteger(flairLevel) || flairLevel == 0) throw "Error: param flairLevel is incorrect";
-
+async function changeLevel(userId, roomId, targetLevel) {
+    if (!targetLevel || !Number.isInteger(targetLevel) || targetLevel == 0) throw "Error: param flairLevel is incorrect";
 
     if (!userId) throw "Error: The param userId does not exist";
     var useri = await isObjId(userId);
@@ -288,31 +286,14 @@ async function changeLevel(userId, roomId, currLevel, flairLevel) {
     var roomi = await isObjId(roomId);
 
     var roomsColl = await roomsCollection();
-    var roomArray = await roomsColl.find({ _id: roomi }).toArray();
-    if (roomArray.length == 0) throw "Error: room with given id does not exist";
-
     let userColl = await userCollection();
-    var userArray = await userColl.find({ _id: useri }).toArray();
-    if (userArray.length == 0) throw "Error: user with given id does not exist";
-
-
-    // currLevel -> level of user who is editing
-    // userId -> taget user
-    var targetLevel = 3;
-    for (var m = 0; m < roomArray[0].members.length; m++) {
-        if (roomArray[0].members[m].userId == useri) {
-            targetLevel = roomArray[0].members[m].flairLevel;
-            break;
-        }
-    }
-    if (currLevel < targetLevel) throw "Error: you don't have the ability to change this user's details";
 
     // update user's roomlist
-    const userupdated = await userColl.update({ _id: useri, 'roomList.roomId': roomi }, { $set: { "roomList.$.flairLevel": flairLevel } });
+    const userupdated = await userColl.updateOne({ _id: useri, 'roomList.roomId': roomi }, { $set: { "roomList.$.flairLevel": targetLevel } });
     if (userupdated.matchedCount === 0) throw "Error: the user's roomList cannot be updated!!";
 
     //update room's member list
-    const roomupdated = await roomsColl.update({ _id: roomi, 'members.userId': useri }, { $set: { "members.$.flairLevel": flairLevel } });
+    const roomupdated = await roomsColl.updateOne({ _id: roomi, 'members.userId': useri }, { $set: { "members.$.flairLevel": targetLevel } });
     if (roomupdated.matchedCount === 0) throw "Error: the room's memberlist cannot be updated!!";
 
     return true;
