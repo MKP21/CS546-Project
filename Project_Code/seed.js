@@ -1,7 +1,6 @@
 const user = require('./data/user');
 const room = require('./data/room');
 
-
 async function seedmain() {
     //add users
     try {
@@ -29,44 +28,11 @@ async function seedmain() {
         var newRoom = await room.createRoom("Dunder Mifflin", "All employees of DM Scranton", mic._id, 30);
         var roomss = await user.roomList('ms@dundermifflin.com');
         var adduse = await room.addUser(dw._id, newRoom);
-        // add dw to the room
-
-        //send messages
-        //upvote/downvote
-
-        var dlogin = await user.userLogin('ds@dundermifflin.com', 'pewdiepie1');
-        var mlogin = await user.userLogin('ms@dundermifflin.com', 'pewdiepie');
-        dw = await user.getUserByEmail('ds@dundermifflin.com');
-
-        mic = await user.getUserByEmail("ms@dundermifflin.com");
-        var send = await room.sendMessage("ms@dundermifflin.com", mic.roomList[0].roomId, "I'm the best manager there is!!");
-        var send2 = await room.sendMessage("ds@dundermifflin.com", mic.roomList[0].roomId, "That's right Michael!!");
-
-        // var quit = await user.userLogout('ms@dundermifflin.com');
-        // var quit2 = await user.userLogout('ds@dundermifflin.com');
+        return true;
 
     } catch (e) {
         console.log(e);
     }
-
-
-
-
 }
 
-
-async function trialMain() {
-    //create room
-    try {
-
-
-
-
-    } catch (e) {
-        console.log(e);
-    }
-
-}
-
-seedmain();
-//trialMain();
+var m = seedmain();

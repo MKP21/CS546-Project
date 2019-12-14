@@ -148,6 +148,56 @@ router.post('/levels', async (req, res) => {
     res.render('editroom', { title: "Edit Room", message2: e, roomid: m });
   }
 });
+
+// leave room
+router.get('/:id/leaveroom', async (req, res) => {
+  try {
+    var userObj = await userFunctions.getUserByEmail(req.session.uMail);
+    var roomObj = await roomFunctions.getRoom(req.session.roomid);
+    var del;
+    if (roomObj.creatorId.equals(userObj._id)) {
+      del = await roomFunctions.deleteRoom(roomObj._id, userObj._id);
+    } else {
+      del = await roomFunctions.removeUser(userObj._id, roomObj._id);
+    }
+    res.redirect('/');
+  } catch (e) {
+    console.log(e);
+    res.redirect('/');
+  }
+});
+
+// renders create room
+router.get('/createroom', async (req, res) => {
+  try {
+    res.render('createroom', { title: "Create Room" })
+  } catch (e) {
+    res.render('error', { title: "Error", message: e })
+  }
+
+});
+
+// creates the room
+router.post('/createroom', async (req, res) => {
+  try {
+    var userobj = await userFunctions.getUserByEmail(req.session.uMail);
+    var id = userobj._id;
+    let rtitle = req.body.title;
+    let rdesc = req.body.description;
+    let limit = parseInt(req.body.limit);
+    let x = await roomFunctions.createRoom(rtitle, rdesc, id, limit);
+    if (x) {
+      //res.redirect('/');
+      res.render('createroom', { title: "Create a room", message: "Room Created successfully ! " });
+    }
+    else {
+      res.render('createroom', { title: "Create a room", message: "Room could not be created !" });
+    }
+  } catch (e) {
+    res.render('createroom', { title: "error", message: e })
+  }
+});
+
 // when user selects a room, this page will be rendered, it has the chat
 router.get('/:id', async (req, res) => {
   try {

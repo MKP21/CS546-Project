@@ -73,10 +73,10 @@ async function deleteRoom(roomId, userId) {
     //checking user level
     var userArray = await userColl.find({ _id: useri }).toArray();
     if (userArray.length === 0) throw "Error: a user with the given id does not exist!";
-    console.log(userArray[0]._id);
+    //console.log(userArray[0]._id);
     var roomArray = await roomsColl.find({ _id: roomi }).toArray();
     if (roomArray.length === 0) throw "Error: a room with the given id does not exist!";
-    console.log(roomArray[0].creatorId);
+    //console.log(roomArray[0].creatorId);
     if (userArray[0]._id.toString() != roomArray[0].creatorId.toString()) throw "Error: this user is not the room creator, hence he can't delete it";
 
     //delete room from each user's list

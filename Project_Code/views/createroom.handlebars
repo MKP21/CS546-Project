@@ -1,0 +1,14 @@
+<div class="center">
+    <form action="/room/createroom" method="POST">
+        <label for="title">Room Title: </label>
+        <input type="text" id="title" name="title" placeholder="" required><br>
+        <label for="description">Room Description: </label>
+        <input type="text" id="description" name="description" placeholder="" required><br>
+        <label for="limit">Room Limit: </label>
+        <input type="number" step="1" id="limit" name="limit" placeholder=""><br>
+        <button type="submit">Submit</button>
+        {{#if message}}
+        <p>{{this.message}}</p>
+        {{/if}}
+</div>
+<a href="/">Go back to Dashboard</a>
