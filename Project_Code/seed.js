@@ -1,9 +1,11 @@
+const dbConnection = require('./config/mongoConnection');
 const user = require('./data/user');
 const room = require('./data/room');
 
-async function seedmain() {
+const seedmain = async () => {
     //add users
     try {
+        const db = await dbConnection();
         var newUser = await user.createUser('Michael', 'Scott', 'ms@dundermifflin.com', 'pewdiepie');
         var newUser1 = await user.createUser('Dright', 'Schrute', 'ds@dundermifflin.com', 'pewdiepie1');
         var newUser2 = await user.createUser('Jim', 'Halpert', 'jh@dundermifflin.com', 'pewdiepie2');
@@ -28,11 +30,10 @@ async function seedmain() {
         var newRoom = await room.createRoom("Dunder Mifflin", "All employees of DM Scranton", mic._id, 30);
         var roomss = await user.roomList('ms@dundermifflin.com');
         var adduse = await room.addUser(dw._id, newRoom);
-        return true;
-
+        await db.serverConfig.close();
     } catch (e) {
         console.log(e);
     }
 }
 
-var m = seedmain();
+seedmain().catch(console.log);

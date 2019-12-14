@@ -65,6 +65,13 @@ cursor: pointer;
 color: white;
 }
 
+.image-home{
+  content:url("/public/594bce73dfb4c87a381aae1d_simple-logo-high-res\ \(1\).png");
+  max-width: 100%;
+  max-height: fit-content;
+  background:white;
+  
+}
 
 .social_icon{
 position: absolute;

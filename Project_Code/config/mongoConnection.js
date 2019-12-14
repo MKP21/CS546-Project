@@ -4,7 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 
 const mongoConfig = {
   serverUrl: 'mongodb://localhost:27017/',
-  database: 'Class_Room'
+  database: 'Simple'
 };
 
 let _connection = undefined;

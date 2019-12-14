@@ -33,25 +33,20 @@
           <hr class="mb-0">
           <div class="tab-content">
             <div class="tab-pane fade show active" id="direct" role="tabpanel">
-              <a class="m1" href="/logout">
-
-
-                {{#each roomsList}}
+              {{#each roomsList}}
+              <a class="m1" href="/room/{{this.roomId}}">
                 <div class="channel">
                   <span class="avatar avatar-sm status  mr-3 bg-success rounded-circle"></span>
                   <div class="flex-grow-1">
                     <div class="d-flex align-items-center mb-3">
                       <p class="mr-auto">
-                        <a href="/room/{{this.roomId}}">{{this.roomName}}
-                        </a>
+                        {{this.roomName}}
                       </p>
                     </div>
                   </div>
                 </div>
-                {{/each}}
-
-
               </a>
+              {{/each}}
             </div>
           </div>
         </div>
@@ -67,8 +62,8 @@
     <div class="chat chat-offcanvas open">
       <div class="d-flex">
         <div class="flex-grow-1">
-          <div class="container px-lg-5">
-            <h1>SIMPLE</h1>
+          <div class=" image-home container px-lg-5">
+
 
           </div>
         </div>
@@ -76,6 +71,8 @@
       </div>
     </div>
   </main>
+
+  <!--Our main socket io new code, error check it -->
 
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
     integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"

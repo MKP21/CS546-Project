@@ -37,25 +37,26 @@
                     <hr class="mb-0">
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="direct" role="tabpanel">
-                            <a class="m1" href="/logout">
 
 
-                                {{#each roomsList}}
+
+                            {{#each roomsList}}
+                            <a class="m1" href="/room/{{this.roomId}}">
                                 <div class="channel">
                                     <span class="avatar avatar-sm status  mr-3 bg-success rounded-circle"></span>
                                     <div class="flex-grow-1">
                                         <div class="d-flex align-items-center mb-3">
                                             <p class="mr-auto">
-                                                <a href="/room/{{this.roomId}}">{{this.roomName}}
-                                                </a>
+                                                {{this.roomName}}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                {{/each}}
-
-
                             </a>
+                            {{/each}}
+
+
+
                         </div>
                     </div>
                 </div>
@@ -88,9 +89,9 @@
                                 <div id="myModal" class="modal">
                                     <!-- Modal content -->
                                     <div class="modal-content"> <span class="close">&times;</span>
-                                        <p>DESCRIPTION</p>
+                                        <h3>Description</h3>
                                         <p>{{desc}}</p>
-                                        <p><b>Share the code, To Invite!</b></p>
+                                        <h3 class="p-t-30">Share the code, To Invite!</h3>
                                         <p>{{invitecode}}</p>
                                     </div>
                                 </div>

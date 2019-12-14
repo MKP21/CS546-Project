@@ -42,10 +42,10 @@ router.post('/login', async (req, res) => {
       if (sess.uMail) {
         res.redirect('/user');
       } else {
-        res.render('login', { title: "login", error: "username and/or password are incorrect" });
+        res.render('login', { title: "login", message: "username and/or password are incorrect" });
       }
     } catch (e) {
-      res.render('login', { title: "login", error: e });
+      res.render('login', { title: "login", message: e });
     }
   }
 
