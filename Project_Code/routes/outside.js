@@ -8,7 +8,7 @@ router.get('/', async function (req, res) {
   if (ses.uMail) {
     res.redirect('/user'); // if user is authenticated redirect to user's home
   } else {
-    res.status(200).render('login', { title: "login" }); // render login form
+    res.status(200).render('login', { title: "Login" }); // render login form
   }
 })
 
@@ -18,7 +18,7 @@ router.get('/login', async function (req, res, next) {
   if (ses.uMail) {
     res.redirect('/user'); // if user is authenticated redirect to user's home
   } else {
-    res.render('login', { title: "login" }); // render login form
+    res.render('login', { title: "Login" }); // render login form
   }
 })
 

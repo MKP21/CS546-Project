@@ -1,20 +1,44 @@
-<header>
-    <h1>{{title}}</h1>
-</header>
-<form action="/login" id="login-form" method="POST">
-    <label for="email">Email: </label>
-    <input type="text" id="email" name="email"/>
-    <label for="password">Password: </label>
-    <input type="password" id="password" name="password"/>
+<div class="container container-3">
+  <div class="d-flex justify-content-center h-100">
+    <div class="card">
+      <div class="card-header">
+        <h1>{{title}}</h1>
+      </div>
+      <div class="card-body">
+        <form action="/login" id="login-form" method="POST">
+          <div class="input-group form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <label for="email"></label>
+            <div class="pwdtxt">
+              <input type="text" class="pwdtxt" placeholder="Enter Email" name="email" id="email" required>
+            </div>
 
-    <button type="submit" class="submit-button">Submit</button>
-</form>
 
+          </div>
+          <div class="input-group form-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-key"></i></span>
+              <label for="password"></label>
+              <div class="pwdtxt">
 
-<p>{{error}}</p>
-<!--
-render a view with a login form for a username and password.
-The form used to submit the POST request to the server must have an id of login-form. 
-The input for the username must have a name/id of username; 
-the input for the password must have name/id of password.
--->
+                <input type="password" placeholder="Enter Password" name="password" id="password" required>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button type="submit" class=" float-center login_btn">Submit</button>
+            <p>{{error}}</p>
+          </div>
+
+        </form>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-center links">
+          Don't have an account?<a class="links" href="/signup">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

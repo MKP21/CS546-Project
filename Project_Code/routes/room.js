@@ -82,6 +82,11 @@ router.post('/updateroom', async (req, res) => {
 router.post('/remove', async (req, res) => {
   try {
     var x = req.body.action;
+    if (!Array.isArray(x)) {
+      y = [];
+      y.push(x);
+      x = y;
+    }
     for (var i = 0; i < x.length; i++) {
       if (x[i] != "") {
         var userid = x[i];
@@ -99,8 +104,9 @@ router.post('/remove', async (req, res) => {
         var obj = await userFunctions.getUser(lowerLevels[i].userId)
         lowerLevels[i].username = obj.firstName + " " + obj.lastName;
       }
+      res.render('editroom', { title: "Edit Room", roomid: req.session.roomid, message2: "users succesfully deleted!!", lowerLevels: lowerLevels });
     }
-    res.render('editroom', { title: "Edit Room", roomid: req.session.roomid, message2: "users succesfully deleted!!", lowerLevels: lowerLevels });
+
   } catch (e) {
     res.render('editroom', { title: "Edit Room", message2: e, roomid: m });
   }
@@ -198,6 +204,31 @@ router.post('/createroom', async (req, res) => {
   }
 });
 
+// middleware to check if user is a part of that room
+router.get('/:id', async (req, res, next) => {
+  try {
+    let m = req.url;
+    m = m.substring(1);
+    var roomObj = await roomFunctions.getRoom(m);
+    var flag = false;
+    for (var i = 0; i < roomObj.members.length; i++) {
+      var em = await userFunctions.getUser(roomObj.members[i].userId);
+      if (req.session.uMail == em.email) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) {
+      next();
+    } else {
+      res.redirect('/');
+    }
+  } catch (e) {
+    console.log(e)
+    res.redirect('/');
+    //res.status(400).render('error', { title: "error", message: e });
+  }
+});
 // when user selects a room, this page will be rendered, it has the chat
 router.get('/:id', async (req, res) => {
   try {

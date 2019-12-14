@@ -1,96 +1,198 @@
-<!-- left side pane -->
-<div>
-  <h3>Room List</h3>
-  <ul>
-    {{#each roomsList}}
-    <li>
-      <a href="/room/{{this.roomId}}">{{this.roomName}}</a>
-    </li>
-    {{/each}}
-  </ul>
-  <p><a href="/room/{{roomId}}/edit"> Edit Room</a> </p>
-  <a href="/room/joinRoom"><button>Join</button></a>
-  <a href="/room/createroom"><button>Create</button></a>
-  <p><a href="/user/changepswd"> Change Password</a></p>
-  <p><a href="/logout">logout</a></p>
-</div>
+<!-- THE ORGINAL TEMPLATE FROM GRAYSHIFT.IO, AND THEN MODIFIED ACCORDING TO OUR NEEDS -->
 
-<!-- middlepane, chatbox-->
-<div class="middlepane">
-  <div class="w3-container w3-teal w3-center w3-round-large w3-margin">
-    <h2>Room Title</h2>
-    <a href="/room/{{roomId}}/leaveroom"><button>Leave Room</button></a>
 
-    <!-- The Modal -->
-    <button id="myBtn">Description</button>
+<div class="d-flex flex-column flex-lg-row">
+    <div class="sidebar sidebar-expand-lg order-1 order-lg-0">
+        <div class="container py-5 px-lg-5">
 
-    <div id="myModal" class="modal">
-      <!-- Modal content -->
-      <div class="modal-content"> <span class="close">&times;</span>
-        <p>{{desc}}</p>
-        <p>{{invitecode}}</p>
-      </div>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="channels" role="tabpanel">
+                    <ul class="nav nav-tabs nav-justified nav-sm mt-3" role="tablist" aria-orientation="horizontal">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/logout"> Logout</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/user/changepswd"> Edit Password </a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav nav-tabs nav-justified nav-sm mt-3" role="tablist" aria-orientation="horizontal">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/room/joinRoom"> Join Room</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/room/createroom"> Create Room </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-tabs nav-justified nav-sm mt-3" role="tablist" aria-orientation="horizontal">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/room/{{roomId}}/edit">Edit Room</a>
+                        </li>
+                    </ul>
+
+
+                    <div class="d-flex align-items-center mt-5">
+                        <h3 class="mr-3">RoomList</h3>
+                    </div>
+                    <hr class="mb-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="direct" role="tabpanel">
+                            <a class="m1" href="/logout">
+
+
+                                {{#each roomsList}}
+                                <div class="channel">
+                                    <span class="avatar avatar-sm status  mr-3 bg-success rounded-circle"></span>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <p class="mr-auto">
+                                                <a href="/room/{{this.roomId}}">{{this.roomName}}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{/each}}
+
+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
     </div>
-  </div>
+    <div class="modal fade" id="compose" tabindex="-1" role="dialog" aria-labelledby="composeLabel" aria-hidden="true">
 
-  <div class="w3-container" id="messages">
+    </div>
+    <main class="flex-lg-grow-1">
+        <div class="chat chat-offcanvas open">
+            <div class="d-flex">
+                <div class="flex-grow-1">
+                    <div class="container px-lg-5">
+                        <div class="chat-header">
+                            <span class="avatar avatar-sm status mr-3 bg-info rounded-circle"></span>
+                            <div class="mr-auto">
+                                <h2 class="mb-2 lh-100">{{title}}</h2>
 
-    {{#each history}}
+                            </div>
+                            <div class="d-flex align-items-center">
 
-    <p>{{this.username}} : {{this.text}}</p>
+                                <!-- The Modal -->
 
-    {{/each}}
-
-  </div>
-
-  <div id="input_zone" class="w3-display-middle">
-    <form action="">
-      <input id="m" autocomplete="off" />
-      <div>
-        <button class="w3-bar w3-wide w3-pink  w3-border w3-border-red w3-round-large">Send</button>
-      </div>
-    </form>
-  </div>
-</div>
-<!--- right side pane-->
-<div>
-  <!-- online users list -->
-  <h4>Online Users</h4>
-  <ul>
-    {{#each listOnline}}
-    <li>
-      {{this}}
-    </li>
-    {{/each}}
-  </ul>
-</div>
+                                <button id="myBtn" class="btn nav-tabs btn-2" type="button">
+                                    Info
+                                </button>
+                                <div id="myModal" class="modal">
+                                    <!-- Modal content -->
+                                    <div class="modal-content"> <span class="close">&times;</span>
+                                        <p>DESCRIPTION</p>
+                                        <p>{{desc}}</p>
+                                        <p><b>Share the code, To Invite!</b></p>
+                                        <p>{{invitecode}}</p>
+                                    </div>
+                                </div>
 
 
-<script src="/socket.io/socket.io.js"></script>
-<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-<script>
-  $(function () {
-    var email = "{{usermail}}";
-    var roomId = "{{roomId}}"
+                                <a href="/room/{{roomId}}/leaveroom">
+                                    <button class="btn nav-tabs btn-2" data-toggle="modal" data-target="#call"
+                                        type="button">
+                                        Leave Room
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                        <div id="messages" class="chat-body">
+                            {{#each history}}
 
-    var socket = io();
-    $('form').submit(function (e) {
-      e.preventDefault(); // prevents page reloading
+                            <p class="w3-ul w3-large w3-animate-left">{{this.username}} : {{this.text}}</p>
 
-      // makes call to backend socket.io
-      socket.emit('chat message', { msg: $('#m').val(), email: email, roomId: roomId });
+                            {{/each}}
+                        </div>
+                        <div class="chat-footer">
+                            <form action="">
+                                <div class="input-group">
+                                    <input id="m" class="form-control form-control-lg" placeholder="Type message..."
+                                        autofocus>
+                                    <div class="input-group-append">
+                                        <button class="btn" type="submit">
+                                            <i data-eva="paper-plane" data-eva-animation="pulse"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
-      // reseting value in textarea to emptry
-      $('#m').val('');
-      return false;
-    });
+            </div>
+        </div>
+    </main>
+    <div class="right-side  sidebar sidebar-expand-lg order-1 order-lg-0">
+        <div class="container py-5 px-lg-5">
 
-    socket.on('chat message', function (msg) {
-      $('#messages').append($('<p>').text(msg));
-    });
-  });
-</script>
-<script>
-  var socket = io();
-</script>
-<script src="../public/modal.js"></script>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="channels" role="tabpanel">
+                    <div class="d-flex align-items-center mt-5">
+                        <h3 class="mr-3">Online Users</h3>
+                    </div>
+                    <hr class="mb-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="direct" role="tabpanel">
+                            {{#each listOnline}}
+                            <div class=" right-side-tab channel">
+                                <div class=" right-side-tab flex-grow-1">
+                                    <div class=" right-side-tab d-flex align-items-center mb-3">
+                                        <p class=" right-side-tab mr-auto">{{this}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+            integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
+            crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/eva-icons@1.1.2/eva.min.js"
+            integrity="sha384-evc6xuruZOLSxcDYJOMhN4pnuWv2x1hHaVU9m0os+cvprT9Gg1sgClT+EM4n/ng9"
+            crossorigin="anonymous"></script>
+        <script src="dist/js/offcanvas.min.js"></script>
+        <script>
+            eva.replace()
+        </script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+            $(function () {
+                var email = "{{usermail}}";
+                var roomId = "{{roomId}}"
+
+                var socket = io();
+                $('form').submit(function (e) {
+                    e.preventDefault(); // prevents page reloading
+
+                    // makes call to backend socket.io
+                    socket.emit('chat message', { msg: $('#m').val(), email: email, roomId: roomId });
+
+                    // reseting value in textarea to emptry
+                    $('#m').val('');
+                    return false;
+                });
+
+                socket.on('chat message', function (msg) {
+                    $('#messages').append($('<p class="w3-ul w3-large w3-animate-left"></p>').text(msg));
+                });
+            });
+        </script>
+        <script>
+            var socket = io();
+        </script>
+        <script src="../public/modal.js"></script>
